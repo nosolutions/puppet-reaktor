@@ -4,7 +4,9 @@
 #
 class reaktor::install {
 
-  vcsrepo { '/home/reaktor/reaktor':
+  $repodir = "${::reaktor::homedir}/reaktor"
+
+  vcsrepo { $repodir:
     ensure   => present,
     provider => git,
     source   => 'https://github.com/pzim/reaktor.git',
@@ -22,7 +24,7 @@ class reaktor::install {
       gid    => $reaktor::gid,
     }
 
-    Vcsrepo['/home/reaktor/reaktor'] {
+    Vcsrepo[$repodir] {
       require  => User[$::reaktor::user]
     }
   }

@@ -17,9 +17,10 @@
 #   Default: 'https://github.com/pzim/reaktor.git',
 class reaktor (
   $manage_user  = true,
-  $user = 'reaktor',
-  $uid  = 4500,
-  $gid  = 4500,
+  $user         = 'reaktor',
+  $homedir      = '/home/reaktor',
+  $uid          = 4500,
+  $gid          = 4500,
   $reaktor_repo = 'https://github.com/pzim/reaktor.git',
   ) inherits ::reaktor::params {
 

@@ -1,5 +1,6 @@
 fixtures:
   repositories:
     stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
+    vcsrepo: "https://github.com/puppetlabs/puppetlabs-vcsrepo.git"
   symlinks:
     reaktor: "#{source_dir}"

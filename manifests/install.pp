@@ -24,8 +24,8 @@ class reaktor::install {
       gid    => $reaktor::gid,
     }
 
-    # Vcsrepo[$repodir] {
-    #   require  => User[$::reaktor::user]
-    # }
+    Vcsrepo[$repodir] {
+      require  => User[$::reaktor::user]
+    }
   }
 }

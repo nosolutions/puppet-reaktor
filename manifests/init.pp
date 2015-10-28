@@ -21,7 +21,7 @@ class reaktor (
   $homedir      = '/home/reaktor',
   $uid          = 4500,
   $gid          = 4500,
-  $reaktor_repo = 'https://github.com/pzim/reaktor.git',
+  $repository   = 'https://github.com/pzim/reaktor.git',
   ) inherits ::reaktor::params {
 
   # validate parameters here
@@ -29,7 +29,7 @@ class reaktor (
   validate_string($user)
   validate_integer($uid)
   validate_integer($gid)
-  validate_string($repo)
+  validate_string($repository)
 
   class { '::reaktor::install': }
   # class { '::reaktor::config': } ~>

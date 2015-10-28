@@ -11,6 +11,15 @@ class reaktor::install {
     provider => 'git',
     source   => $::reaktor::repository,
     user     => $::reaktor::user,
+    notify   => Exec['reaktor_bundle_install']
+  }
+
+  exec { 'reaktor_bundle_install':
+    command     => 'bundle install',
+    cwd         => $repodir,
+    path        => ['/bin', '/usr/bin', '/usr/local/bin'],
+    refreshonly => true,
+    user        => $::reaktor::user,
   }
 
   if $::reaktor::manage_user {
@@ -32,7 +41,7 @@ class reaktor::install {
     }
 
     Vcsrepo[$repodir] {
-      require  => User[$::reaktor::user]
+      require  => File[$::reaktor::homedir]
     }
   }
 }

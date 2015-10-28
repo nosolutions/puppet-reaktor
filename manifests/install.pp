@@ -8,7 +8,7 @@ class reaktor::install {
 
   vcsrepo { $repodir:
     ensure   => present,
-    provider => git,
+    provider => 'git',
     source   => 'https://github.com/pzim/reaktor.git',
     user     => $::reaktor::user,
   }

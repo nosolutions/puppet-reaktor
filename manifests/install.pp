@@ -17,11 +17,18 @@ class reaktor::install {
     group { $::reaktor::user:
       ensure => present,
       gid    => $::reaktor::gid
-    }
+    } ->
     user { $::reaktor::user:
       ensure => present,
-      uid    => $reaktor::uid,
-      gid    => $reaktor::gid,
+      home   => $::reaktor::homedir,
+      uid    => $::reaktor::uid,
+      gid    => $::reaktor::gid,
+    } ->
+    file { $::reaktor::homedir:
+      ensure => directory,
+      mode   => '0750',
+      owner  => $::reaktor::user,
+      group  => $::reaktor::gid,
     }
 
     Vcsrepo[$repodir] {

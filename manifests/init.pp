@@ -50,7 +50,7 @@
 #
 # [*dir*]
 #   A string defining the directory where reaktor is installed.
-#   Default `$reaktor::homedir`.
+#   Default `${reaktor::homedir}/reaktor`.
 #
 # [*repository*]
 #   Defines the repository of the reaktor source code.
@@ -62,7 +62,13 @@
 #
 # [*config*]
 #   A hash defining the configuration for reaktor. See the reaktor doc for more information (https://github.com/pzim/reaktor#environment-variables). In case the service runs as a (Ubuntu/upstart) service the environment variables are inserted into the service script.
-#   Default: empty.
+#   Default:
+#     `{
+#       'RACK_ROOT'                   => $reaktor::dir,
+#       'RESQUE_WORKER_USER'          => $reaktor::user,
+#       'RESQUE_WORKER_GROUP'         => $reaktor::group,
+#       'REAKTOR_PUPPET_MASTERS_FILE' => "${reaktor::dir}/masters.txt",
+#     }`
 #
 # [*address*]
 #   Rake config defining the address.

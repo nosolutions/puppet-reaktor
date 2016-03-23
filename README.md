@@ -93,7 +93,7 @@ A string defining the init direcotry. Default: `/etc/init` on Ubunutu, not set o
 
 #### reaktor::dir
 
-A string defining the directory where reaktor is installed. Default `$reaktor::homedir`.
+A string defining the directory where reaktor is installed. Default `${reaktor::homedir}/reaktor`.
 
 #### reaktor::repository
 
@@ -106,7 +106,15 @@ Defines the package name for the build essentials. Default: `build-essential` fo
 #### reaktor::config
 
 A hash defining the configuration for reaktor. See the reaktor doc for more information (https://github.com/pzim/reaktor#environment-variables). In case the service runs as a (Ubuntu/upstart) service the environment variables are inserted into the service script.
-Default: empty.
+Default:
+´´´puppet
+{
+  'RACK_ROOT'                   => $reaktor::dir,
+  'RESQUE_WORKER_USER'          => $reaktor::user,
+  'RESQUE_WORKER_GROUP'         => $reaktor::group,
+  'REAKTOR_PUPPET_MASTERS_FILE' => "${reaktor::dir}/masters.txt",
+}
+´´´
 
 #### reaktor::address
 

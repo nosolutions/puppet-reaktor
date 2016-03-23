@@ -34,10 +34,11 @@ This module installs and configures reaktor (https://github.com/pzim/reaktor). I
 
 ```puppet
 class { 'reaktor':
-  config => {
+  config  => {
     REAKTOR_PUPPET_MASTERS_FILE => '/path/to/mastersfile.txt',
     PUPPETFILE_GIT_URL          => 'https://bath.to/puppetfile.git',
     ...
+  masters => [ 'someone@puppetmaster1', 'someone@puppetmaster2' ],
 }
 ```
 

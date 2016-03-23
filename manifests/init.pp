@@ -72,7 +72,7 @@
 #
 # [*address*]
 #   Rake config defining the address.
-#   Default: `localhost`.
+#   Default: `${::fqdn}`.
 #
 # [*port*]
 #   Rake config defining the port.

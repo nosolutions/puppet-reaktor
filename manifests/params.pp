@@ -20,7 +20,7 @@ class reaktor::params {
   $repository   = 'https://github.com/pzim/reaktor.git'
 
   # reaktor configs
-  $address              = 'localhost'
+  $address              = $::fqdn
   $port                 = 4570
   $servers              = 1
   $max_conns            = 1024

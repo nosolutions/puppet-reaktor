@@ -119,7 +119,7 @@ Default:
 
 #### reaktor::address
 
-Rake config defining the address. Default: `localhost`.
+Rake config defining the address. Default: `${::fqdn}`.
 
 #### reaktor::port
 

@@ -22,4 +22,17 @@ class reaktor::config {
     mode    => '0544',
     require => Vcsrepo[$reaktor::_dir],
   }
+
+  if $reaktor::manage_masters {
+    $masters = $reaktor::masters
+
+    file { "${::reaktor::_dir}/masters.txt":
+      ensure  => present,
+      content => template("${module_name}/masters.txt.erb"),
+      owner   => $::reaktor::user,
+      group   => $::reaktor::group,
+      mode    => '0544',
+      require => Vcsrepo[$reaktor::_dir],
+    }
+  }
 }

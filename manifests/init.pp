@@ -110,6 +110,14 @@
 #   Rake config defining if reaktor runs as a daemon or not.
 #   Default: `false` on Ubuntu, `true` on all other systems.
 #   Needs to be set to false on Ubuntu if reaktor should run as an (upstart) service.
+#
+# [*manage_masters*]
+#   Used to define if the masters file should be create/managed by the puppet module.
+#   Default: `true`.
+#
+# [*masters*]
+#   Array containing the puppet masters.
+#   Default: [].
 
 class reaktor (
   $manage_user              = $::reaktor::params::manage_user,
@@ -141,6 +149,9 @@ class reaktor (
   $pid                  = $::reaktor::params::pid,
   $log                  = $::reaktor::params::log,
   $daemonize            = $::reaktor::params::daemonize,
+
+  $manage_masters = $::reaktor::params::manage_masters,
+  $masters        = []
   ) inherits ::reaktor::params {
 
   # validate parameters here

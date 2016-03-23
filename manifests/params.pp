@@ -30,6 +30,9 @@ class reaktor::params {
   $pid                  = 'tmp/pids/reaktor.pid'
   $log                  = 'reaktor.log'
 
+  # masters.txt file
+  $manage_masters = true
+
   case $::osfamily {
     'Debian': {
       $manage_service           = true

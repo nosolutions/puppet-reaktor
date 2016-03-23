@@ -157,6 +157,14 @@ Rake config defining the rake log output. Default: `reaktor.log`.
 Rake config defining if reaktor runs as a daemon or not. Default: `false` on Ubuntu, `true` on all other systems.
 Needs to be set to false on Ubuntu if reaktor should run as an (upstart) service.
 
+#### reaktor::manage_masters
+
+Used to define if the masters file should be create/managed by the puppet module. Default: `true`.
+
+#### reaktor::masters
+
+Array containing the puppet masters. Default: `[]`.
+
 ## Limitations
 
 Tested on Ubuntu 14.04

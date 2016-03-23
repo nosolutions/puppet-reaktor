@@ -9,6 +9,7 @@ class reaktor::install {
   vcsrepo { $repodir:
     ensure   => present,
     provider => 'git',
+    force    => true,
     source   => $::reaktor::repository,
     user     => $::reaktor::user,
     notify   => Ruby::Bundle[$repodir],

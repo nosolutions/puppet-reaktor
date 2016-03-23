@@ -4,29 +4,47 @@
 #
 class reaktor::install {
 
-  $repodir = "${::reaktor::homedir}/reaktor"
+  class { "::ruby::dev":
+  }
+
+  $repodir = $reaktor::_dir
 
   vcsrepo { $repodir:
     ensure   => present,
     provider => 'git',
     source   => $::reaktor::repository,
     user     => $::reaktor::user,
-    notify   => Exec['reaktor_bundle_install']
+    notify   => Ruby::Bundle[$repodir],
   }
 
-  exec { 'reaktor_bundle_install':
-    command     => 'bundle install',
+  unless $::reaktor::build_essentials_package == undef {
+    ensure_packages($::reaktor::build_essentials_package)
+    Package[$::reaktor::build_essentials_package] {
+      before => Ruby::Bundle[$repodir]
+    }
+  }
+
+  package { 'redis-server':
+    ensure   => present,
+    provider => 'gem'
+  }
+
+  # need to be installed as root
+  ruby::bundle { $repodir:
     cwd         => $repodir,
-    path        => ['/bin', '/usr/bin', '/usr/local/bin'],
-    refreshonly => true,
-    user        => $::reaktor::user,
+    option      => '--without development test doc',
+    user        => 0,
+    group       => 0,
+  }
+
+  if $::reaktor::manage_group {
+    group { $::reaktor::group:
+      ensure => present,
+      gid    => $::reaktor::gid,
+    }
   }
 
   if $::reaktor::manage_user {
-    group { $::reaktor::user:
-      ensure => present,
-      gid    => $::reaktor::gid
-    } ->
     user { $::reaktor::user:
       ensure => present,
       home   => $::reaktor::homedir,
@@ -42,6 +60,12 @@ class reaktor::install {
 
     Vcsrepo[$repodir] {
       require  => File[$::reaktor::homedir]
+    }
+
+    if $::reaktor::manage_group {
+      User[$::reaktor::user] {
+        require => Group[$::reaktor::group]
+      }
     }
   }
 }

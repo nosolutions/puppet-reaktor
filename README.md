@@ -5,11 +5,9 @@
 3. [Setup - The basics of getting started with reaktor](#setup)
     * [What reaktor affects](#what-reaktor-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with reaktor](#beginning-with-reaktor)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+6. [Limitations - OS compatibility, etc.](#limitations)
 
 ## Overview
 
@@ -17,44 +15,140 @@ Install and configure [reaktor](https://github.com/pzim/reaktor)
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology the module integrates with and what that integration enables. This section should answer the questions: "What does this module *do*?" and "Why would I use it?"
-
-If your module has a range of functionality (installation, configuration, management, etc.) this is the time to mention it.
+This module installs and configures reaktor (https://github.com/pzim/reaktor). It additonally creates upstart services (Ubuntu only) to run reaktor as a service.
 
 ## Setup
 
 ### What reaktor affects
 
-* A list of files, packages, services, or operations that the module will alter, impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+* installs build-essential (Ubuntu only)
+* installs reaktor using puppetlabs-ruby bundler
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled, etc.), mention it here.
-
-### Beginning with reaktor
-
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you may wish to include an additional section here: Upgrading (For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+* puppetlabs-stdlib (https://github.com/puppetlabs/puppetlabs-stdlib/)
+* puppetlabs-ruby (https://github.com/puppetlabs/puppetlabs-ruby)
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing the fancy stuff with your module here.
+```puppet
+class { 'reaktor':
+  config => {
+    REAKTOR_PUPPET_MASTERS_FILE => '/path/to/mastersfile.txt',
+    PUPPETFILE_GIT_URL          => 'https://bath.to/puppetfile.git',
+    ...
+}
+```
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module. This section should include all of the under-the-hood workings of your module so people know what the module is touching on their system but don't need to mess with things. (We are working on automating this section!)
+### reaktor
+
+Initialises and install reaktor.
+
+#### reaktor::manage_user
+
+Defines if the user which runs reaktor is created or not. Default: `true`.
+
+#### reaktor::user
+
+Defines the user which runs reaktor. Default `reaktor`.
+
+#### reaktor::homedir
+
+Defines the user's home directory which is also the directory where reaktor is installed to. Default: `/opt/reaktor`.
+
+#### reaktor::shell
+
+Defines the user's shell. Default: `/usr/sbin/nologin`.
+
+#### reaktor::uid
+
+Defines the user's UID. Default: `4500`.
+
+#### reaktor::manage_group
+
+Defines it the group is created or not. Default `true`.
+
+#### reaktor::group
+
+Defines the group. Default: `reaktor`.
+
+#### reaktor::gid
+
+Defines the group's GID. Default: `4500`.
+
+#### reaktor::manage_service
+
+Defines if the service(s) to run reaktor are created or not. Default: `true` on Ubuntu, `false` on all other systems.
+
+#### reaktor::service_provider
+
+A String defining the service provider. Default: `upstart` on Ubuntu, not set on all other systems.
+
+#### reaktor::init_dir
+
+A string defining the init direcotry. Default: `/etc/init` on Ubunutu, not set on all other systems.
+
+#### reaktor::dir
+
+A string defining the directory where reaktor is installed. Default `$reaktor::homedir`.
+
+#### reaktor::repository
+
+Defines the repository of the reaktor source code. Default: `https://github.com/pzim/reaktor.git`.
+
+#### reaktor::build_essentials_package
+
+Defines the package name for the build essentials. Default: `build-essential` for Ubuntu, `undef` for all other systems.
+
+#### reaktor::config
+
+A hash defining the configuration for reaktor. See the reaktor doc for more information (https://github.com/pzim/reaktor#environment-variables). In case the service runs as a (Ubuntu/upstart) service the environment variables are inserted into the service script.
+Default: empty.
+
+#### reaktor::address
+
+Rake config defining the address. Default: `localhost`.
+
+#### reaktor::port
+
+Rake config defining the port. Default: `4570`.
+
+#### reaktor::servers
+
+Rake config defining the number of servers. Default: `1`.
+
+#### reaktor::max_conns
+
+Rake config defining the maximum number of connections. Default: `1024`.
+
+#### reaktor::max_persistent_conns
+
+Rake config defining the maximum number of persistent connections. Default: `512`.
+
+#### reaktor::timeout
+
+Rake config defining the timeout. Default: `30`.
+
+#### reaktor::environment
+
+Rake config defining the environment. Default: `production`.
+
+#### reaktor::pid
+
+Rake config defining the PID. Default: `tmp/pids/reaktor.pid`.
+
+#### reaktor::log
+
+Rake config defining the rake log output. Default: `reaktor.log`.
+
+#### reaktor::daemonize
+
+Rake config defining if reaktor runs as a daemon or not. Default: `false` on Ubuntu, `true` on all other systems.
+Needs to be set to false on Ubuntu if reaktor should run as an (upstart) service.
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Tested on Ubuntu 14.04
 
-## Development
-
-Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You may also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.

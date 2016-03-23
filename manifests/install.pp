@@ -4,9 +4,6 @@
 #
 class reaktor::install {
 
-  class { "::ruby::dev":
-  }
-
   $repodir = $reaktor::_dir
 
   vcsrepo { $repodir:

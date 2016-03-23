@@ -28,6 +28,7 @@ This module installs and configures reaktor (https://github.com/pzim/reaktor). I
 
 * puppetlabs-stdlib (https://github.com/puppetlabs/puppetlabs-stdlib/)
 * puppetlabs-ruby (https://github.com/puppetlabs/puppetlabs-ruby)
+ * ruby::dev needs to be included.
 
 ## Usage
 

@@ -14,7 +14,7 @@ setgid <%= @group %>
 <%-
 unless @config.nil? or @config.empty?
   @config.sort_by{ |k, v| k}.each do |pair|
--%>env <%= pair[0] -%>=<%= pair[1] %>
+-%>env <%= pair[0] -%>="<%= pair[1] %>"
 <%-
   end
 end

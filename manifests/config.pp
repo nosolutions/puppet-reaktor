@@ -20,5 +20,6 @@ class reaktor::config {
     owner   => $::reaktor::user,
     group   => $::reaktor::group,
     mode    => '0544',
+    require => Vcsrepo[$reaktor::_dir],
   }
 }

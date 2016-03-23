@@ -151,7 +151,7 @@ class reaktor (
   validate_string($repository)
 
   $_dir = $dir ? {
-    undef   => $homedir,
+    undef   => "${homedir}/reaktor",
     default => $dir
   }
   validate_absolute_path($_dir)

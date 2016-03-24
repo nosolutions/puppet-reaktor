@@ -118,6 +118,10 @@
 # [*masters*]
 #   Array containing the puppet masters.
 #   Default: [].
+#
+# [*notifiers*]
+#   Hash containing the configs for the notifiers which will be linked to the available notifiers.
+#   Default: { hipchat.rb => { ensure => 'present'} }.
 
 class reaktor (
   $manage_user              = $::reaktor::params::manage_user,
@@ -151,7 +155,9 @@ class reaktor (
   $daemonize            = $::reaktor::params::daemonize,
 
   $manage_masters = $::reaktor::params::manage_masters,
-  $masters        = []
+  $masters        = [],
+
+  $notifiers = {},
   ) inherits ::reaktor::params {
 
   # validate parameters here

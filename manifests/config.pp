@@ -35,4 +35,12 @@ class reaktor::config {
       require => Vcsrepo[$reaktor::_dir],
     }
   }
+  
+  $notifiers_defaults = {
+    'hipchat.rb' => {
+      ensure => present,
+    }
+  }
+
+  create_resources('reaktor::config::notifiers', merge($notifiers_defaults, $reaktor::notifiers), {})
 }

@@ -166,6 +166,10 @@ Used to define if the masters file should be create/managed by the puppet module
 
 Array containing the puppet masters. Default: `[]`.
 
+#### reaktor::notifiers
+Hash containing the configs for the notifiers which will be linked to the available notifiers.
+Default: `{ hipchat.rb => { ensure => 'present'} }`.
+
 ## Limitations
 
 Tested on Ubuntu 14.04

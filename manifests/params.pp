@@ -5,8 +5,6 @@
 #
 class reaktor::params {
 
-  $ensure       = 'present'
-
   $manage_user  = true
   $user         = 'reaktor'
   $homedir      = '/opt/reaktor'

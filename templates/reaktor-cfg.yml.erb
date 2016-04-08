@@ -1,0 +1,13 @@
+---
+address              : <%= @address %>
+port                 : <%= @port %>
+<%- if @daemonize -%>
+servers              : <%= @servers %>
+<%- end -%>
+max_conns            : <%= @max_conns %>
+max_persistent_conns : <%= @max_persistent_conns %>
+timeout              : <%= @timeout %>
+environment          : <%= @environment %>
+pid                  : <%= @pid %>
+log                  : <%= @log %>
+daemonize            : <%= @daemonize %>

@@ -1,0 +1,19 @@
+# This file is managed by puppet
+# Any attempt at changing it will be overwritten on the next run.
+
+description "redis for running reaktor"
+start on starting reaktor
+stop on stopped reaktor
+
+respawn
+respawn limit 2 60
+
+setuid <%= @user %>
+setgid <%= @group %>
+
+script
+
+  cd <%= @dir %>
+  exec redis run
+
+end script

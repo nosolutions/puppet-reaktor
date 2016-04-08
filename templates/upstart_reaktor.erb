@@ -1,0 +1,28 @@
+# This file is managed by puppet
+# Any attempt at changing it will be overwritten on the next run.
+
+description "Starts the rake task for running reaktor"
+start on runlevel [2345]
+stop on runlevel [016]
+
+respawn
+respawn limit 2 60
+
+setuid <%= @user %>
+setgid <%= @group %>
+
+<%-
+unless @config.nil? or @config.empty?
+  @config.sort_by{ |k, v| k}.each do |pair|
+-%>env <%= pair[0] -%>="<%= pair[1] %>"
+<%-
+  end
+end
+-%>
+
+script
+
+  cd <%= @dir %>
+  exec rake start 
+
+end script

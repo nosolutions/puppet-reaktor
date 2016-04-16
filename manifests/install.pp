@@ -4,7 +4,7 @@
 #
 class reaktor::install {
 
-  $repodir = $reaktor::_dir
+  $repodir = $reaktor::_install_dir
 
   vcsrepo { $repodir:
     ensure   => present,
@@ -27,6 +27,9 @@ class reaktor::install {
     provider => 'gem'
   }
 
+  include ruby
+  include ruby::dev
+  
   # need to be installed as root
   ruby::bundle { $repodir:
     cwd         => $repodir,

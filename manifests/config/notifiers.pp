@@ -16,7 +16,7 @@ define reaktor::config::notifiers(
   }
 
   $_link = $link ? {
-    undef   => "${reaktor::_dir}/lib/reaktor/notification/active_notifiers/${title}",
+    undef   => "${reaktor::_install_dir}/lib/reaktor/notification/active_notifiers/${title}",
     default => $link,
   }
 
@@ -29,7 +29,7 @@ define reaktor::config::notifiers(
     ensure  => $link_ensure,
     owner   => $owner,
     group   => $group,
-    require => Vcsrepo[$reaktor::_dir],
+    require => Vcsrepo[$reaktor::_install_dir],
   }
 
   if $link_ensure == 'link' {

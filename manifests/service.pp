@@ -7,7 +7,7 @@ class reaktor::service {
 
   $user  = $::reaktor::user
   $group = $::reaktor::group
-  $dir   = $::reaktor::_dir
+  $dir   = $::reaktor::_install_dir
 
   case $::reaktor::service_provider {
     'upstart': {

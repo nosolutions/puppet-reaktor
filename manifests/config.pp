@@ -14,25 +14,25 @@ class reaktor::config {
   $log                  = $::reaktor::log
   $deamonize            = $::reaktor::deamonize
 
-  file { "${::reaktor::_dir}/reaktor-cfg.yml":
+  file { "${::reaktor::_install_dir}/reaktor-cfg.yml":
     ensure  => present,
     content => template("${module_name}/reaktor-cfg.yml.erb"),
     owner   => $::reaktor::user,
     group   => $::reaktor::group,
     mode    => '0544',
-    require => Vcsrepo[$reaktor::_dir],
+    require => Vcsrepo[$reaktor::_install_dir],
   }
 
   if $reaktor::manage_masters {
     $masters = $reaktor::masters
 
-    file { "${::reaktor::_dir}/masters.txt":
+    file { "${::reaktor::_install_dir}/masters.txt":
       ensure  => present,
       content => template("${module_name}/masters.txt.erb"),
       owner   => $::reaktor::user,
       group   => $::reaktor::group,
       mode    => '0544',
-      require => Vcsrepo[$reaktor::_dir],
+      require => Vcsrepo[$reaktor::_install_dir],
     }
   }
   

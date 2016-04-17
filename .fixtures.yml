@@ -1,6 +1,13 @@
 fixtures:
-  repositories:
-    stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
-    vcsrepo: "https://github.com/puppetlabs/puppetlabs-vcsrepo.git"
+  forge_modules:
+    stdlib:
+      repo: puppetlabs/stdlib
+      ref: 4.11.0
+    vcsrepo:
+      repo: puppetlabs/vcsrepo
+      ref: 1.3.2
+    ruby:
+      repo: puppetlabs/ruby
+      ref: 0.4.0
   symlinks:
     reaktor: "#{source_dir}"

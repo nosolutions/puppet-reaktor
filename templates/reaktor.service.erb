@@ -1,5 +1,5 @@
 [Service]
-Type=simple
+Type=forking
 PermissionsStartOnly=true
 ExecStartPre=/usr/bin/mkdir -p /run/reaktor
 ExecStartPre=/usr/bin/chown reaktor:reaktor /run/reaktor
@@ -9,4 +9,4 @@ EnvironmentFile=<%= scope['::reaktor::homedir'] %>/etc/reaktor_environment
 WorkingDirectory=<%= scope['::reaktor::_install_dir']%>
 User=<%= scope['::reaktor::user'] %>
 Group=<%= scope['::reaktor::group'] %>
-PIDFile=/run/reaktor/reaktor.pid
+PIDFile=/run/reaktor/reaktor.<%= scope['::reaktor::port'] %>.pid

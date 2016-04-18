@@ -6,7 +6,12 @@ ExecStartPre=/usr/bin/chown reaktor:reaktor /run/reaktor
 ExecStart=/usr/bin/rake start
 ExecStop=/usr/bin/rake stop
 EnvironmentFile=<%= scope['::reaktor::homedir'] %>/etc/reaktor_environment
-WorkingDirectory=<%= scope['::reaktor::_install_dir']%>
+<% if not scope['::reaktor::notifiers'].empty? -%>
+<% scope['::reaktor::notifiers'].keys.each do |key| -%>
+EnvironmentFile=<%= scope['::reaktor::homedir'] -%>/etc/<%= key -%>_environment
+<% end -%>
+<% end -%>  
+WorkingDirectory=<%= scope['::reaktor::_install_dir'] %>
 User=<%= scope['::reaktor::user'] %>
 Group=<%= scope['::reaktor::group'] %>
 PIDFile=/run/reaktor/reaktor.<%= scope['::reaktor::port'] %>.pid

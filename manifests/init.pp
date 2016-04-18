@@ -121,7 +121,15 @@
 #
 # [*notifiers*]
 #   Hash containing the configs for the notifiers which will be linked to the available notifiers.
-#   Default: { hipchat.rb => { ensure => 'present'} }.
+#   Default: {} (no notifiers are aktive)
+#   Example for an active notifiert
+#   'hipchat' => {
+#      config => {
+#        reaktor_hipchat_token => 'token',
+#        reaktor_hipchat_room  => 'theroom',
+#        reaktor_hipchat_from  => 'reaktor',
+#      }
+#     }
 #
 # [*manage_redis*]
 #   Whether or not to manage the redis installation on this host.

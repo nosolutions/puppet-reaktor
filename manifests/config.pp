@@ -29,16 +29,17 @@ class reaktor::config {
     ensure => file,
     owner   => $::reaktor::user,
     group   => $::reaktor::group,
-    mode    => '0544',
+    mode    => '0644',
     content => template("${module_name}/reaktor_environment.erb"),
     require => Vcsrepo[$reaktor::_install_dir],
   }
-  
-  $notifiers_defaults = {
-    'hipchat.rb' => {
-      ensure => present,
+
+  if $::reaktor::notifiers == undef or $::reaktor::notifiers == {} {
+    file { "${reaktor::_install_dir}/lib/reaktor/notification/active_notifiers/hipchat.rb":
+      ensure => absent
     }
   }
-
-  create_resources('reaktor::config::notifiers', merge($notifiers_defaults, $reaktor::notifiers), {})
+  else {
+    create_resources('reaktor::config::notifiers', merge($notifiers_defaults, $reaktor::notifiers), {})
+  }
 }

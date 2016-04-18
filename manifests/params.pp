@@ -6,7 +6,6 @@
 class reaktor::params {
   case $::osfamily {
     'Debian': {
-      $manage_service           = true
       $service_name             = 'reaktor'
       $service_provider         = 'upstart'
       $build_essentials_package = 'build-essential'
@@ -14,9 +13,10 @@ class reaktor::params {
       $daemonize                = false
       $redis_package            = 'redis-server'
       $redis_package_provider   = 'gem'
+      $redis_service_name       = 'redis-server'
+      $pidfile                  = 'tmp/pids/reaktor.pid'
     }
-    'RedHat', 'Amazon': {
-      $manage_service           = false
+    'RedHat': {
       $service_name             = 'reaktor'
       $service_provider         = undef
       $build_essentials_package = undef
@@ -24,6 +24,8 @@ class reaktor::params {
       $daemonize                = true
       $redis_package            = 'redis'
       $redis_package_provider   = undef
+      $redis_service_name       = 'redis'
+      $pidfile                  = '/run/reaktor/reaktor.pid'
     }
     default: {
       fail("${::operatingsystem} not supported")

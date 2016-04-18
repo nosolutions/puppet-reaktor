@@ -152,8 +152,10 @@ class reaktor (
   $gid                      = 4500,
   $homedir                  = '/opt/reaktor',
   $shell                    = '/usr/bin/nologin',
-  $manage_service           = $::reaktor::params::manage_service,
+  $manage_service           = true,
   $service_provider         = $::reaktor::params::service_provider,
+  $service_name             = $::reaktor::service_name,
+  $redis_service_name       = $::reaktor::redis_service_name,
   $init_dir                 = $::reaktor::params::init_dir,
   $install_dir              = undef,
   $repository               = 'https://github.com/pzim/reaktor.git',
@@ -166,7 +168,7 @@ class reaktor (
   $max_persistent_conns     = 512,
   $timeout                  = 30,
   $environment              = 'production',
-  $pidfile                  = 'tmp/pids/reaktor.pid',
+  $pidfile                  = $::reaktor::params::pidfile,
   $log                      = 'reaktor.log',
   $daemonize                = $::reaktor::params::daemonize,
   $manage_masters           = true,
@@ -176,6 +178,7 @@ class reaktor (
   $redis_package            = $::reaktor::redis_package,
   $redis_package_provider   = $::reaktor::params::redis_package_provider,
   $proxy                    = undef,
+  $controlrepository        = undef,
   ) inherits ::reaktor::params {
 
   validate_bool($manage_user)
@@ -187,6 +190,8 @@ class reaktor (
   validate_absolute_path($homedir)
   validate_absolute_path($shell)
   validate_bool($manage_service)
+  validate_string($service_name)
+  validate_string($redis_service_name)
   validate_string($repository)
   validate_hash($config)
   validate_string($address)
@@ -208,6 +213,17 @@ class reaktor (
 
   if $proxy != undef {
     validate_re($proxy,'^http://.*$', "Invalid variable proxy: ${proxy}, value must start with http://")
+  }
+
+  if $service_provider != undef {
+    validate_re($service_provider, '^(upstart|systemd)', "Invalid service_provider ${service_provider}, has to upstart or systemd!")
+  }
+
+  if $controlrepository == undef {
+    warning("You need to set \$::reaktor::controlrepository, or reaktor will not work!")
+  }
+  else {
+    validate_string($controlrepository)
   }
 
   $_install_dir = $install_dir ? {

@@ -3,22 +3,29 @@
 # This class is called from reaktor for install.
 #
 class reaktor::install {
-
-  $repodir = $reaktor::_install_dir
-
-  vcsrepo { $repodir:
+  vcsrepo { $::reaktor::_install_dir:
     ensure   => present,
     provider => 'git',
     force    => true,
     source   => $::reaktor::repository,
     user     => $::reaktor::user,
-    notify   => Ruby::Bundle[$repodir],
+    notify   => Ruby::Bundle[$::reaktor::_install_dir],
+  }
+
+  file {
+    ["${::reaktor::homedir}/log",
+     "${::reaktor::homedir}/etc"]:
+       ensure => directory,
+       owner  => $::reaktor::user,
+       group  => $::reaktor::group,
+       mode   => '0755',
+       require => Vcsrepo[$reaktor::_install_dir],
   }
 
   unless $::reaktor::build_essentials_package == undef {
     ensure_packages($::reaktor::build_essentials_package)
     Package[$::reaktor::build_essentials_package] {
-      before => Ruby::Bundle[$repodir]
+      before => Ruby::Bundle[$::reaktor::_install_dir]
     }
   }
 
@@ -30,8 +37,8 @@ class reaktor::install {
   include ruby::dev
   
   # need to be installed as root
-  ruby::bundle { $repodir:
-    cwd         => $repodir,
+  ruby::bundle { $::reaktor::_install_dir:
+    cwd         => $::reaktor::_install_dir,
     option      => '--without development test doc',
     user        => 0,
     group       => 0,
@@ -58,7 +65,7 @@ class reaktor::install {
       group  => $::reaktor::gid,
     }
 
-    Vcsrepo[$repodir] {
+    Vcsrepo[$::reaktor::_install_dir] {
       require  => File[$::reaktor::homedir]
     }
 

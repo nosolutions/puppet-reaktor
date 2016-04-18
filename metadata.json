@@ -20,6 +20,10 @@
       "name": "puppetlabs-vcsrepo",
       "version_requirement": ">= 1.3.2"
     }
+    {
+      "name": "stahnma/epel",
+      "version_requirement": ">= 1.2.2"
+    }
   ],
   "operatingsystem_support": [
     {

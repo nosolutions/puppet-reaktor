@@ -40,7 +40,7 @@ class reaktor::service {
     ensure  => $ensure,
     content => template("${module_name}/upstart_reaktor_redis.erb"),
     mode    => $init_mode,
-  }->
+  } ->
   file { $init_file_reaktor:
     ensure  => $ensure,
     content => template("${module_name}/upstart_reaktor.erb"),

@@ -12,6 +12,8 @@ class reaktor::params {
       $build_essentials_package = 'build-essential'
       $init_dir                 = '/etc/init'
       $daemonize                = false
+      $redis_package            = 'redis-server'
+      $redis_package_provider   = 'gem'
     }
     'RedHat', 'Amazon': {
       $manage_service           = false
@@ -20,6 +22,8 @@ class reaktor::params {
       $build_essentials_package = undef
       $init_dir                 = undef
       $daemonize                = true
+      $redis_package            = 'redis'
+      $redis_package_provider   = undef
     }
     default: {
       fail("${::operatingsystem} not supported")

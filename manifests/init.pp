@@ -122,7 +122,27 @@
 # [*notifiers*]
 #   Hash containing the configs for the notifiers which will be linked to the available notifiers.
 #   Default: { hipchat.rb => { ensure => 'present'} }.
-
+#
+# [*manage_redis*]
+#   Whether or not to manage the redis installation on this host.
+#   Default: true  
+#  
+# [*redis_package*]
+#   The name of the redis package to install
+#   Default:
+#     Redhat: redis
+#     Debian: redis-server  
+#
+# [*redis_package_provider*]
+#   The package provider to use for installing the redis package
+#   Default:
+#     Redhat: undef (so the default is used)
+#     Debian: gem
+#
+# [*proxy*]
+#   A proxy server used to install packages
+#   Default: undef
+#
 class reaktor (
   $manage_user              = true,
   $manage_group             = true,
@@ -152,6 +172,10 @@ class reaktor (
   $manage_masters           = true,
   $masters                  = [],
   $notifiers                = {},
+  $manage_redis             = true,
+  $redis_package            = $::reaktor::redis_package,
+  $redis_package_provider   = $::reaktor::params::redis_package_provider,
+  $proxy                    = undef,
   ) inherits ::reaktor::params {
 
   validate_bool($manage_user)
@@ -178,6 +202,13 @@ class reaktor (
   validate_bool($manage_masters)
   validate_array($masters)
   validate_hash($notifiers)
+  validate_bool($manage_redis)
+  validate_string($redis_package)
+  validate_string($redis_provider)
+
+  if $proxy != undef {
+    validate_re($proxy,'^http://.*$', "Invalid variable proxy: ${proxy}, value must start with http://")
+  }
 
   $_install_dir = $install_dir ? {
     undef   => "${homedir}/reaktor",

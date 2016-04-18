@@ -22,9 +22,8 @@ class reaktor::install {
     }
   }
 
-  package { 'redis-server':
-    ensure   => present,
-    provider => 'gem'
+  if $::reaktor::manage_redis == true {
+    contain reaktor::redis
   }
 
   include ruby

@@ -21,7 +21,6 @@ class reaktor::service::redhat {
 
   service { $::reaktor::service_name:
     ensure     => 'running',
-    enable     => true,
     hasstatus  => true,
     hasrestart => true,
     require    => File[$init_file_reaktor],

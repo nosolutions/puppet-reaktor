@@ -16,7 +16,7 @@ group :test do
   gem "puppet-lint-leading_zero-check"
   gem "puppet-lint-trailing_comma-check"
   gem "puppet-lint-version_comparison-check"
-  gem "puppet-lint-classes_and_types_beginning_with"
+  gem "puppet-lint-classes_and_types_beginning_with_digits-check"
 end
 
 group :development do

@@ -48,7 +48,7 @@
 #   A string defining the init direcotry.
 #   Default: `/etc/init` on Ubunutu, not set on all other systems.
 #
-# [*dir*]
+# [*install_dir*]
 #   A string defining the directory where reaktor is installed.
 #   Default `${reaktor::homedir}/reaktor`.
 #
@@ -121,68 +121,135 @@
 #
 # [*notifiers*]
 #   Hash containing the configs for the notifiers which will be linked to the available notifiers.
-#   Default: { hipchat.rb => { ensure => 'present'} }.
-
+#   Default: {} (no notifiers are aktive)
+#   Example for an active notifiert
+#   'hipchat' => {
+#      config => {
+#        reaktor_hipchat_token => 'token',
+#        reaktor_hipchat_room  => 'theroom',
+#        reaktor_hipchat_from  => 'reaktor',
+#      }
+#     }
+#
+# [*manage_redis*]
+#   Whether or not to manage the redis installation on this host.
+#   Default: true  
+#  
+# [*redis_package*]
+#   The name of the redis package to install
+#   Default:
+#     Redhat: redis
+#     Debian: redis-server  
+#
+# [*redis_package_provider*]
+#   The package provider to use for installing the redis package
+#   Default:
+#     Redhat: undef (so the default is used)
+#     Debian: gem
+#
+# [*proxy*]
+#   A proxy server used to install packages
+#   Default: undef
+#
 class reaktor (
-  $manage_user              = $::reaktor::params::manage_user,
-  $user                     = $::reaktor::params::user,
-  $homedir                  = $::reaktor::params::homedir,
-  $shell                    = $::reaktor::params::shell,
-  $uid                      = $::reaktor::params::uid,
-
-  $manage_group             = $::reaktor::params::manage_group,
-  $group                    = $::reaktor::params::group,
-  $gid                      = $::reaktor::params::gid,
-
-  $manage_service           = $::reaktor::params::manage_service,
+  $manage_user              = true,
+  $manage_group             = true,
+  $user                     = 'reaktor',
+  $group                    = 'reaktor',
+  $uid                      = 4500,
+  $gid                      = 4500,
+  $homedir                  = '/opt/reaktor',
+  $shell                    = '/usr/bin/nologin',
+  $manage_service           = true,
   $service_provider         = $::reaktor::params::service_provider,
+  $service_name             = $::reaktor::service_name,
+  $redis_service_name       = $::reaktor::redis_service_name,
   $init_dir                 = $::reaktor::params::init_dir,
-
-  $dir                      = undef,
-  $repository               = $::reaktor::params::repository,
+  $install_dir              = undef,
+  $repository               = 'https://github.com/pzim/reaktor.git',
   $build_essentials_package = $::reaktor::params::build_essentials_package,
   $config                   = {},
-  
-  $address              = $::reaktor::params::address,
-  $port                 = $::reaktor::params::port,
-  $servers              = $::reaktor::params::servers,
-  $max_conns            = $::reaktor::params::max_conns,
-  $max_persistent_conns = $::reaktor::params::max_persistent_conns,
-  $timeout              = $::reaktor::params::timeout,
-  $environment          = $::reaktor::params::environment,
-  $pid                  = $::reaktor::params::pid,
-  $log                  = $::reaktor::params::log,
-  $daemonize            = $::reaktor::params::daemonize,
-
-  $manage_masters = $::reaktor::params::manage_masters,
-  $masters        = [],
-
-  $notifiers = {},
+  $address                  = $::fqdn,
+  $port                     = 4570,
+  $servers                  = 1,
+  $max_conns                = 1024,
+  $max_persistent_conns     = 512,
+  $timeout                  = 30,
+  $environment              = 'production',
+  $pidfile                  = $::reaktor::params::pidfile,
+  $log                      = 'reaktor.log',
+  $daemonize                = $::reaktor::params::daemonize,
+  $manage_masters           = true,
+  $masters                  = [],
+  $notifiers                = {},
+  $manage_redis             = true,
+  $redis_package            = $::reaktor::redis_package,
+  $redis_package_provider   = $::reaktor::params::redis_package_provider,
+  $proxy                    = undef,
+  $controlrepository        = undef,
   ) inherits ::reaktor::params {
 
-  # validate parameters here
   validate_bool($manage_user)
+  validate_bool($manage_group)
   validate_string($user)
+  validate_string($group)
+  validate_integer($uid)
+  validate_integer($gid)
   validate_absolute_path($homedir)
   validate_absolute_path($shell)
-  validate_integer($uid)
-
-  validate_bool($manage_group)
-  validate_string($group)
-  validate_integer($gid)
-
+  validate_bool($manage_service)
+  validate_string($service_name)
+  validate_string($redis_service_name)
   validate_string($repository)
+  validate_hash($config)
+  validate_string($address)
+  validate_integer($port)
+  validate_integer($servers)
+  validate_integer($max_conns)
+  validate_integer($max_persistent_conns)
+  validate_integer($timeout)
+  validate_string($environment)
+  validate_string($pidfile)
+  validate_string($log)
+  validate_bool($daemonize)
+  validate_bool($manage_masters)
+  validate_array($masters)
+  validate_hash($notifiers)
+  validate_bool($manage_redis)
+  validate_string($redis_package)
+  validate_string($redis_provider)
 
-  $_dir = $dir ? {
-    undef   => "${homedir}/reaktor",
-    default => $dir
+  if $proxy != undef {
+    validate_re($proxy,'^http://.*$', "Invalid variable proxy: ${proxy}, value must start with http://")
   }
-  validate_absolute_path($_dir)
 
-  class { '::reaktor::install': }
+  if $service_provider != undef {
+    validate_re($service_provider, '^(upstart|systemd)', "Invalid service_provider ${service_provider}, has to upstart or systemd!")
+  }
+
+  if $controlrepository == undef {
+    warning("You need to set \$::reaktor::controlrepository, or reaktor will not work!")
+  }
+  else {
+    validate_string($controlrepository)
+  }
+
+  $_install_dir = $install_dir ? {
+    undef   => "${homedir}/reaktor",
+    default => $install_dir
+  }
+  validate_absolute_path($_install_dir)
+
+  contain ::reaktor::install
+  contain ::reaktor::config
+
+  Class['::reaktor::install'] ->
+  Class['::reaktor::config']
 
   if $manage_service {
-    class { '::reaktor::service': }
+    contain ::reaktor::service
+
+    Class['::reaktor::config'] ~>
+    Class['::reaktor::service']
   }
-  class { '::reaktor::config': }
 }

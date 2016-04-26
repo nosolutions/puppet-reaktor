@@ -1,0 +1,7 @@
+REAKTOR_PUPPET_MASTERS_FILE=<%= scope['::reaktor::homedir'] %>/etc/masters
+PUPPETFILE_GIT_URL=<%= scope['::reaktor::controlrepository'] %>
+RACK_ROOT=<%= scope['::reaktor::_install_dir'] %>
+RESQUE_WORKER_USER=<%= scope['::reaktor::user'] %>
+RESQUE_WORKER_GROUP=<%= scope['::reaktor::group'] %>
+REAKTOR_LOG=<%= scope['::reaktor::homedir'] %>/log/reaktor.log
+REAKTOR_SKIP_BRANCHES='master development testing production'

@@ -1,13 +1,13 @@
 ---
-address              : <%= @address %>
-port                 : <%= @port %>
-<%- if @daemonize -%>
-servers              : <%= @servers %>
+address              : <%= scope['::reaktor::address'] %>
+port                 : <%= scope['::reaktor::port'] %>
+<%- if scope['::reaktor::daemonize'] -%>
+servers              : <%= scope['::reaktor::servers'] %>
 <%- end -%>
-max_conns            : <%= @max_conns %>
-max_persistent_conns : <%= @max_persistent_conns %>
-timeout              : <%= @timeout %>
-environment          : <%= @environment %>
-pid                  : <%= @pid %>
-log                  : <%= @log %>
-daemonize            : <%= @daemonize %>
+max_conns            : <%= scope['::reaktor::max_conns'] %>
+max_persistent_conns : <%= scope['::reaktor::max_persistent_conns'] %>
+timeout              : <%= scope['::reaktor::timeout'] %>
+environment          : <%= scope['::reaktor::environment'] %>
+pid                  : <%= scope['::reaktor::pidfile'] %>
+log                  : <%= scope['::reaktor::log'] %>
+daemonize            : <%= scope['::reaktor::daemonize'] %>

@@ -3,44 +3,43 @@
 # This class is called from reaktor for service config.
 #
 class reaktor::config {
-  $address              = $::reaktor::address
-  $port                 = $::reaktor::port
-  $servers              = $::reaktor::servers
-  $max_conns            = $::reaktor::max_conns
-  $max_persistent_conns = $::reaktor::max_persistent_conns
-  $timeout              = $::reaktor::timeout
-  $environment          = $::reaktor::environment
-  $pid                  = $::reaktor::pid
-  $log                  = $::reaktor::log
-  $deamonize            = $::reaktor::deamonize
-
-  file { "${::reaktor::_dir}/reaktor-cfg.yml":
+  file { "${::reaktor::_install_dir}/reaktor-cfg.yml":
     ensure  => present,
     content => template("${module_name}/reaktor-cfg.yml.erb"),
     owner   => $::reaktor::user,
     group   => $::reaktor::group,
     mode    => '0544',
-    require => Vcsrepo[$reaktor::_dir],
+    require => Vcsrepo[$reaktor::_install_dir],
   }
 
   if $reaktor::manage_masters {
     $masters = $reaktor::masters
 
-    file { "${::reaktor::_dir}/masters.txt":
+    file { "${::reaktor::homedir}/masters":
       ensure  => present,
-      content => template("${module_name}/masters.txt.erb"),
+      content => template("${module_name}/masters.erb"),
       owner   => $::reaktor::user,
       group   => $::reaktor::group,
       mode    => '0544',
-      require => Vcsrepo[$reaktor::_dir],
-    }
-  }
-  
-  $notifiers_defaults = {
-    'hipchat.rb' => {
-      ensure => present,
+      require => Vcsrepo[$reaktor::_install_dir],
     }
   }
 
-  create_resources('reaktor::config::notifiers', merge($notifiers_defaults, $reaktor::notifiers), {})
+  file { "${::reaktor::homedir}/etc/reaktor_environment":
+    ensure => file,
+    owner   => $::reaktor::user,
+    group   => $::reaktor::group,
+    mode    => '0644',
+    content => template("${module_name}/reaktor_environment.erb"),
+    require => Vcsrepo[$reaktor::_install_dir],
+  }
+
+  if $::reaktor::notifiers == undef or $::reaktor::notifiers == {} {
+    file { "${reaktor::_install_dir}/lib/reaktor/notification/active_notifiers/hipchat.rb":
+      ensure => absent
+    }
+  }
+  else {
+    create_resources('reaktor::config::notifiers', merge($notifiers_defaults, $reaktor::notifiers), {})
+  }
 }
